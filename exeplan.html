@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f2f5f9">
+<title>AI 会战 执行计划（v2）</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ══════════════════════════════════════════
+     TOKENS — Swedish editorial
+     ══════════════════════════════════════════ */
+  :root {
+    /* ── Atmosphere ── */
+    --bg:           #f2f5f9;
+    --surface:      #ffffff;
+
+    /* ── Ink: deep blue-black, never gray ── */
+    --text:         #0d1220;
+    --text-muted:   #4a5d80;
+
+    /* ── Accent: Swedish blue ── */
+    --accent:       #2b6cb0;
+    --accent-light: #5b95d4;
+
+    /* ── Dividers ── */
+    --rule:         #dde4f0;
+    --rule-light:   #e8edf5;
+
+    /* ── Borders ── */
+    --border:       #dce3ef;
+    --border-light: #e6ebf4;
+
+    /* ── Layout ── */
+    --measure:  48rem;
+    --gutter:   2rem;
+
+    /* ── Radii ── */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+
+    /* ── Easing ── */
+    --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* ══════════════════════════════════════════
+     BASE
+     ══════════════════════════════════════════ */
+  html {
+    color-scheme: light;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+    font-size: 16px;
+    line-height: 1.75;
+    font-weight: 400;
+    color: var(--text);
+    background:
+      radial-gradient(ellipse 70% 50% at 15% 5%,  rgba(190, 215, 240, 0.30) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 40% at 80% 90%, rgba(175, 205, 235, 0.22) 0%, transparent 55%),
+      var(--bg);
+    background-attachment: fixed;
+    min-height: 100vh;
+    text-wrap: pretty;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  /* ══════════════════════════════════════════
+     PAGE
+     ══════════════════════════════════════════ */
+  .page {
+    max-width: var(--measure);
+    margin: 0 auto;
+    padding: 5rem var(--gutter) 6rem;
+  }
+
+  /* ══════════════════════════════════════════
+     MASTHEAD — editorial hero
+     ══════════════════════════════════════════ */
+  .masthead {
+    margin-bottom: 4rem;
+    padding-bottom: 2.25rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .masthead h1 {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    font-weight: 560;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    line-height: 1.08;
+    margin-bottom: 1.5rem;
+    text-wrap: balance;
+  }
+  .masthead .stat-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem 3rem;
+    padding-top: 0.5rem;
+  }
+  .masthead .stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+  .masthead .stat-item .stat-number {
+    font-size: 1.75rem;
+    font-weight: 540;
+    color: var(--accent);
+    line-height: 1.15;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+  .masthead .stat-item .stat-label {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    font-weight: 440;
+    letter-spacing: 0.02em;
+  }
+
+  /* ══════════════════════════════════════════
+     SECTION
+     ══════════════════════════════════════════ */
+  .section {
+    margin-bottom: 4.5rem;
+  }
+  .section h2 {
+    font-size: 1rem;
+    font-weight: 560;
+    color: var(--accent);
+    letter-spacing: 0.03em;
+    margin-bottom: 1.75rem;
+    text-wrap: balance;
+  }
+
+  /* ══════════════════════════════════════════
+     BODY
+     ══════════════════════════════════════════ */
+  p {
+    margin-bottom: 0.875rem;
+    max-width: 60ch;
+  }
+  p:last-child { margin-bottom: 0; }
+  strong { font-weight: 560; }
+
+  /* ══════════════════════════════════════════
+     HORIZONTAL RULE — editorial divider
+     ══════════════════════════════════════════ */
+  .hr {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 2rem 0;
+  }
+
+  /* ══════════════════════════════════════════
+     MILESTONE TIMELINE
+     ══════════════════════════════════════════ */
+  .mile-list {
+    list-style: none;
+    margin: 1.25rem 0 0;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--rule-light);
+    border-bottom: 1px solid var(--rule-light);
+  }
+  .mile-list li {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 1.25rem;
+    padding: 0.5rem 0;
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    align-items: baseline;
+  }
+  .mile-list li + li { border-top: 1px solid var(--rule-light); }
+  .mile-list .ml-date {
+    font-size: 0.8125rem;
+    font-weight: 540;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+    text-align: right;
+    padding-top: 0.0625rem;
+  }
+
+  /* ══════════════════════════════════════════
+     SCHEME CARDS
+     ══════════════════════════════════════════ */
+  .scheme-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    margin: 1.5rem 0;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .scheme {
+    background: var(--surface);
+    padding: 1.5rem 1.75rem;
+    font-size: 0.9375rem;
+  }
+  .scheme .tag {
+    display: inline-block;
+    font-size: 0.6875rem;
+    font-weight: 560;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-bottom: 0.625rem;
+  }
+  .scheme .days { font-size: 1.0625rem; font-weight: 540; }
+
+  /* ══════════════════════════════════════════
+     DETAIL LIST — clean editorial cards
+     ══════════════════════════════════════════ */
+  .detail-grid {
+    display: grid;
+    gap: 1px;
+    margin: 1.5rem 0;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .detail-grid.cols-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+  .detail {
+    background: var(--surface);
+    padding: 1.25rem 1.5rem;
+    font-size: 0.9375rem;
+    line-height: 1.75;
+  }
+  .detail .dt-label {
+    font-size: 0.6875rem;
+    font-weight: 560;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+  }
+  .detail .dt-name {
+    font-weight: 560;
+    margin-bottom: 0.2rem;
+  }
+  .detail .dt-desc {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+  }
+  .detail.key .dt-label {
+    color: var(--accent);
+  }
+
+  /* ══════════════════════════════════════════
+     CHECKLIST — editorial numbered
+     ══════════════════════════════════════════ */
+  .checklist {
+    list-style: none;
+    counter-reset: cl;
+    margin: 1.5rem 0;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .checklist li {
+    counter-increment: cl;
+    padding: 0.875rem 0 0.875rem 2.5rem;
+    font-size: 0.9375rem;
+    position: relative;
+  }
+  .checklist li + li { border-top: 1px solid var(--rule-light); }
+  .checklist li::before {
+    content: counter(cl);
+    position: absolute;
+    left: 0;
+    top: 0.875rem;
+    width: 1.625rem;
+    height: 1.625rem;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 560;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ══════════════════════════════════════════
+     CALLOUT BOX
+     ══════════════════════════════════════════ */
+  .callout {
+    background: #eef3fa;
+    border-left: 3px solid var(--accent-light);
+    padding: 1rem 1.5rem;
+    margin: 1.5rem 0;
+    font-size: 0.9375rem;
+    line-height: 1.75;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  }
+  .callout.warn {
+    background: #faf6ee;
+    border-left-color: #c9a86c;
+  }
+
+  /* ══════════════════════════════════════════
+     LINK CARDS
+     ══════════════════════════════════════════ */
+  .link-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    margin-bottom: 2rem;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .link-card {
+    background: var(--surface);
+    padding: 1.25rem 1.5rem;
+  }
+  .link-card .lc-label {
+    font-size: 0.6875rem;
+    font-weight: 560;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+  }
+  .link-card .lc-name {
+    font-weight: 560;
+    margin-bottom: 0.15rem;
+  }
+  .link-card .lc-desc {
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+  }
+
+  /* ══════════════════════════════════════════
+     LINKS
+     ══════════════════════════════════════════ */
+  a {
+    color: var(--accent);
+    text-underline-offset: 0.22em;
+    text-decoration-thickness: 1px;
+    text-decoration-color: var(--accent-light);
+    transition: color 0.2s ease, text-decoration-color 0.2s ease;
+  }
+  a:hover { color: #1a4980; text-decoration-color: var(--accent); }
+
+  /* ══════════════════════════════════════════
+     FOCUS
+     ══════════════════════════════════════════ */
+  a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  /* ══════════════════════════════════════════
+     MOTION
+     ══════════════════════════════════════════ */
+  .section {
+    animation: section-in 0.5s var(--ease-out-quint) both;
+    animation-timeline: view();
+    animation-range: entry 6%;
+  }
+  @keyframes section-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .section { animation: none; }
+    *, *::before, *::after { animation-duration: 0s !important; transition-duration: 0s !important; }
+  }
+
+  /* ══════════════════════════════════════════
+     RESPONSIVE
+     ══════════════════════════════════════════ */
+  @media (max-width: 700px) {
+    .page { padding: 3.5rem 1.25rem 5rem; }
+    .masthead { margin-bottom: 3.5rem; padding-bottom: 2.5rem; }
+    .masthead h1 { font-size: 1.875rem; }
+    .masthead .stat-strip { gap: 0.5rem 1.5rem; }
+    .masthead .stat-item .stat-number { font-size: 1.375rem; }
+    .scheme-row { grid-template-columns: 1fr; }
+    .link-cards { grid-template-columns: 1fr; }
+    .detail-grid.cols-2 { grid-template-columns: 1fr; }
+    .mile-list li { grid-template-columns: 4.5rem 1fr; gap: 0.75rem; }
+    .section { margin-bottom: 4rem; }
+    .section h2 { font-size: 0.9375rem; margin-bottom: 1.25rem; }
+  }
+
+  /* ══════════════════════════════════════════
+     PRINT
+     ══════════════════════════════════════════ */
+  @media print {
+    body { background: #fff; }
+    .page { max-width: none; padding: 1.5rem; }
+    .masthead { margin-bottom: 2rem; padding-bottom: 1.5rem; }
+    .section { margin-bottom: 2.5rem; animation: none; }
+    .detail, .scheme, .link-card { break-inside: avoid; }
+    h2 { break-after: avoid; }
+    .callout { background: #fff; border: 1px solid #ccc; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ════════════════ MASTHEAD ════════════════ -->
+  <header class="masthead">
+    <h1>AI 会战</h1>
+    <div class="stat-strip">
+      <div class="stat-item">
+        <span class="stat-number">6.22</span>
+        <span class="stat-label">开战</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">8.28</span>
+        <span class="stat-label">收工</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">15</span>
+        <span class="stat-label">组</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">6</span>
+        <span class="stat-label">名导师</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">14</span>
+        <span class="stat-label">个选题</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ════════════════ LINKS ════════════════ -->
+  <div class="link-cards">
+    <div class="link-card">
+      <div class="lc-label">报名入口</div>
+      <div class="lc-name"><a href="https://docs.qq.com/sheet/DRG1LZVVaT2VIdnBy?tab=000005" target="_blank" rel="noopener">会战报名表</a></div>
+      <div class="lc-desc">腾讯文档 · 各组提交报名信息</div>
+    </div>
+    <div class="link-card">
+      <div class="lc-label">选题参考</div>
+      <div class="lc-name"><a href="https://docs.qq.com/sheet/DRG1LZVVaT2VIdnBy?tab=000004" target="_blank" rel="noopener">会战选题详情表</a></div>
+      <div class="lc-desc">腾讯文档 · 5 个工程 + 9 个 Skill 详情</div>
+    </div>
+    <div class="link-card">
+      <div class="lc-label">评分标准</div>
+      <div class="lc-name"><a href="https://docs.qq.com/sheet/DRHhSYnV4c1BOcVF4?tab=000001" target="_blank" rel="noopener">AI 会战 评分细则</a></div>
+      <div class="lc-desc">腾讯文档 · 四个维度详细评分标准</div>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <strong>每组必选：1 个工程 + 1 个 Skill。</strong>工程是底线，必须交付；Skill 是加分项，做好了拉开差距。
+  </div>
+
+  <!-- ════════════════ 一、时间线 ════════════════ -->
+  <section class="section">
+    <h2>一、关键节点</h2>
+
+    <p>6 月 22 日周一开战。各组当天交三样：项目计划、技术选型、PRD 初稿。</p>
+
+    <ol class="mile-list" aria-label="里程碑">
+      <li><span class="ml-date">7 月 1 日</span> MVP 能跑</li>
+      <li><span class="ml-date">7 月 8 日</span> 功能过半，P0 清零</li>
+      <li><span class="ml-date">7 月 16 日</span> 真实数据联调跑通</li>
+      <li><span class="ml-date">7 月 22 日</span> 功能到 90%</li>
+      <li><span class="ml-date">7 月底</span> 业务方两轮试用，边反馈边改</li>
+      <li><span class="ml-date">8 月 11 日</span> 功能收尾到 100%</li>
+      <li><span class="ml-date">8 月 21 日</span> 交付物截止</li>
+      <li><span class="ml-date">8 月 28 日</span> 验收、评比、颁奖</li>
+    </ol>
+  </section>
+
+  <!-- ════════════════ 二、工作时间 ════════════════ -->
+  <section class="section">
+    <h2>二、工作日时间安排</h2>
+
+    <p>各组先选方案，定了就别换：</p>
+
+    <div class="scheme-row">
+      <div class="scheme">
+        <div class="tag">方案 A</div>
+        <div class="days">周一 · 周三 集中</div>
+      </div>
+      <div class="scheme">
+        <div class="tag">方案 B</div>
+        <div class="days">周二 · 周四 集中</div>
+      </div>
+    </div>
+
+    <p>集中日全员必须到位（晚&nbsp;7–9&nbsp;点），各组同步开发，导师在场答疑。非集中日自由安排——内部 Review、找导师聊堵点、自己写代码，都行。每周五统一收尾，交进度自评。</p>
+  </section>
+
+  <!-- ════════════════ 三、导师 ════════════════ -->
+  <section class="section">
+    <h2>三、导师职责</h2>
+
+    <p>6 名架构导师，每人负责 2–3 组。导师只做技术的事——进度、排期、组内分工各组自己拿主意。</p>
+
+    <div class="detail-grid">
+
+      <div class="detail key">
+        <div class="dt-label">日常 · 全周期</div>
+        <div class="dt-name">微信群随问随答</div>
+        <div class="dt-desc">每组一个项目群，另有一个全员技术顾问群。代码报错、方案拿不准、工具不会用——直接扔群里，导师看到就回。别憋着。</div>
+      </div>
+
+      <div class="detail">
+        <div class="dt-label">第 1 周</div>
+        <div class="dt-name">技术选型把关</div>
+        <div class="dt-desc">各组提交技术方案后，导师逐一过目。方向偏了的拉回来，选型明显不合适的给替代建议。别让一组人闷头搭了三天环境才发现路子不对。</div>
+      </div>
+
+      <div class="detail">
+        <div class="dt-label">第 1–8 周 · 每周一次</div>
+        <div class="dt-name">集中答疑（共 8 次）</div>
+        <div class="dt-desc">各组把攒了一周的问题当面抛出来。导师按阶段侧重回应：MVP 期控范围，开发期看代码结构，联调期帮排数据对接的坑，测试期查边界覆盖。每次答疑后出一份纪要，共性问题写清楚，后面的组自己翻。</div>
+      </div>
+
+      <div class="detail">
+        <div class="dt-label">第 3 周 + 第 5 周</div>
+        <div class="dt-name">代码质量抽查</div>
+        <div class="dt-desc">导师从自己负责的组里各抽一次代码做深度 Review。不看风格偏好，看结构——分层有没有、错误处理做了没、AI 生成的代码有没有埋雷。问题汇总后一对一反馈。</div>
+      </div>
+
+      <div class="detail key">
+        <div class="dt-label">第 8 周</div>
+        <div class="dt-name">交付前最终 Review</div>
+        <div class="dt-desc">各组代码冻结前，导师做最后一次全面 Review。技术债清干净没有、README 能不能照着跑起来、部署环境稳不稳。这轮过了，才能进交付周。</div>
+      </div>
+
+      <div class="detail">
+        <div class="dt-label">第 9 周</div>
+        <div class="dt-name">不介入</div>
+        <div class="dt-desc">各组集中赶交付物，导师退后。除非线上出严重故障，否则别找导师。</div>
+      </div>
+
+      <div class="detail key">
+        <div class="dt-label">第 10 周</div>
+        <div class="dt-name">评审验收 + 能力评定</div>
+        <div class="dt-desc">逐组核验 5 项交付物，不合格的 24 小时内补交。然后跟 AI 小组一起从 AI 使用程度、Demo 效果、代码质量三方面打分，同时参与评定「AI 交付能力者」名单（综合前 30%）。</div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ════════════════ 四、每周提交 ════════════════ -->
+  <section class="section">
+    <h2>四、每周提交</h2>
+
+    <p>每周五各组提交<strong>进度自评表</strong>。几句话讲清楚，不用写长文。</p>
+
+    <div class="detail-grid">
+
+      <div class="detail key">
+        <div class="dt-label">必填项</div>
+        <div class="dt-name">本周完成了什么</div>
+        <div class="dt-desc">列出实际交付的功能点或任务。没完成的标注原因（卡在哪、缺什么资源）。</div>
+      </div>
+
+      <div class="detail key">
+        <div class="dt-label">必填项</div>
+        <div class="dt-name">当前阻塞与风险</div>
+        <div class="dt-desc">技术卡点、依赖方未响应、token 不够用、数据拿不到——如实写，别美化。导师根据这个优先排答疑。</div>
+      </div>
+
+      <div class="detail key">
+        <div class="dt-label">必填项</div>
+        <div class="dt-name">下周计划</div>
+        <div class="dt-desc">列出下周要交付的具体任务。对照里程碑检查节奏对不对，偏差超过 3 天要单独说明。</div>
+      </div>
+
+      <div class="detail">
+        <div class="dt-label">选填 · 加分项</div>
+        <div class="dt-name">AI 使用情况自述</div>
+        <div class="dt-desc">本周用了哪些 AI 工具（Claude Code / Cursor / ChatGPT 等），生成代码占比大概多少，有没有好用的 prompt 值得分享。这条影响最终「AI 交付能力者」评定。</div>
+      </div>
+
+    </div>
+
+    <p>提交方式：各组在项目群的在线表格里填，每周五 22:00 前。连续两周不交的，导师单独约谈。</p>
+  </section>
+
+  <!-- ════════════════ 五、最终交付 ════════════════ -->
+  <section class="section">
+    <h2>五、最终交付</h2>
+
+    <p>第 9 周（8 月 17–21 日）集中收。交齐下面 5 项才算完成：</p>
+
+    <ol class="checklist" aria-label="最终交付物">
+      <li>
+        <strong>可运行产品 Demo</strong><br>
+        <span style="color:var(--text-muted);font-size:0.875rem;">部署到演示环境，稳定可访问。业务方能在浏览器点开用。</span>
+      </li>
+      <li>
+        <strong>Git 仓库</strong><br>
+        <span style="color:var(--text-muted);font-size:0.875rem;">README 含系统架构图、本地启动步骤、依赖清单。提交记录完整，别最后一天一把梭。</span>
+      </li>
+      <li>
+        <strong>演示视频</strong><br>
+        <span style="color:var(--text-muted);font-size:0.875rem;">3–5 分钟。开头 30 秒团队介绍，后面走核心流程。横屏，有旁白。</span>
+      </li>
+      <li>
+        <strong>PRD &amp; 实施计划文档（定稿）</strong><br>
+        <span style="color:var(--text-muted);font-size:0.875rem;">PRD 写需求范围与优先级。实施计划写技术方案和 AI 能力点用在哪些环节。</span>
+      </li>
+      <li>
+        <strong>AI 协作完整记录</strong><br>
+        <span style="color:var(--text-muted);font-size:0.875rem;">关键 prompt 列表（含上下文）、代表性对话截图、代码 AI 生成占比。</span>
+      </li>
+    </ol>
+
+    <div class="callout">
+      <strong>提交方式：</strong>打包交指定平台（路径开战前通知）。AI 小组逐组核查，缺项限 24 小时内补上。
+    </div>
+  </section>
+
+  <!-- ════════════════ 六、评比 ════════════════ -->
+  <section class="section">
+    <h2>六、评比与收尾</h2>
+
+    <p>第 10 周（8 月 24–28 日）：</p>
+
+    <div class="detail-grid">
+
+      <div class="detail">
+        <div class="dt-label">8 月 25 日</div>
+        <div class="dt-name">验收：导师逐组核验交付物</div>
+        <div class="dt-desc">不合格的 24 小时内补交。补不上来，直接掉队。</div>
+      </div>
+
+      <div class="detail key">
+        <div class="dt-label">8 月 27 日</div>
+        <div class="dt-name">评审：四维度打分</div>
+        <div class="dt-desc">AI 使用程度、参与人员表现、Demo 效果、代码质量。评出 4 项奖项。</div>
+      </div>
+
+      <div class="detail key">
+        <div class="dt-label">8 月 28 日</div>
+        <div class="dt-name">公布：表彰 + 名单</div>
+        <div class="dt-desc">总经办公布获奖结果。综合前 30% 进入「AI 交付能力者」名单。</div>
+      </div>
+
+      <div class="detail">
+        <div class="dt-label">8 月 28 日</div>
+        <div class="dt-name">沉淀：Prompts 库 + 最佳实践手册</div>
+        <div class="dt-desc">AI 小组整理十周积累的 prompts 和踩坑经验，产出内部手册 v1.0。</div>
+      </div>
+
+    </div>
+
+    <div class="callout warn">
+      每组两道关卡：<strong>业务方验收确认函 + 导师评审通过</strong>。缺一个，十周白干。
+    </div>
+  </section>
+
+  <!-- ════════════════ COLOPHON ════════════════ -->
+
+
+</div>
+
+</body>
+</html>
