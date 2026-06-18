@@ -52,6 +52,8 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-size-adjust: 100%;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
@@ -405,6 +407,71 @@
     .detail, .scheme, .link-card { break-inside: avoid; }
     h2 { break-after: avoid; }
     .callout { background: #fff; border: 1px solid #ccc; }
+    .data-table { min-width: auto; font-size: 0.8125rem; }
+    .data-table-wrap { overflow-x: visible; border: 1px solid #ccc; }
+    .data-table thead th { background: #f5f5f5; }
+  }
+
+  /* ══════════════════════════════════════════
+     TABLES
+     ══════════════════════════════════════════ */
+  .data-table-wrap {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    -webkit-overflow-scrolling: touch;
+  }
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.75;
+    min-width: 36rem;
+  }
+  .data-table thead th {
+    text-align: left;
+    font-size: 0.6875rem;
+    font-weight: 560;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--rule);
+    background: #f8fafc;
+  }
+  .data-table tbody td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--rule-light);
+    vertical-align: top;
+  }
+  .data-table tbody tr:nth-child(even) td {
+    background: #fafbfd;
+  }
+  .data-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+  /* Column width hints */
+  .data-table .col-w1 { width: 5.5rem; }
+  .data-table .col-w2 { width: 8rem; }
+
+  .sch-time {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+  @media (max-width: 700px) {
+    .data-table {
+      min-width: 30rem;
+      font-size: 0.8125rem;
+    }
+    .data-table thead th,
+    .data-table tbody td {
+      padding: 0.625rem 0.75rem;
+    }
+    .data-table .col-w1 { width: 4rem; }
+    .data-table .col-w2 { width: 6rem; }
   }
 </style>
 </head>
@@ -421,7 +488,7 @@
         <span class="stat-label">开战</span>
       </div>
       <div class="stat-item">
-        <span class="stat-number">8.28</span>
+        <span class="stat-number">8.31</span>
         <span class="stat-label">收工</span>
       </div>
       <div class="stat-item">
@@ -444,17 +511,17 @@
     <div class="link-card">
       <div class="lc-label">报名入口</div>
       <div class="lc-name"><a href="https://docs.qq.com/sheet/DRG1LZVVaT2VIdnBy?tab=000005" target="_blank" rel="noopener">会战报名表</a></div>
-      <div class="lc-desc">腾讯文档 · 各组提交报名信息</div>
+      <div class="lc-desc">各组提交报名信息</div>
     </div>
     <div class="link-card">
       <div class="lc-label">选题参考</div>
-      <div class="lc-name"><a href="https://docs.qq.com/sheet/DRG1LZVVaT2VIdnBy?tab=000004" target="_blank" rel="noopener">会战选题详情表</a></div>
-      <div class="lc-desc">腾讯文档 · 5 个工程 + 9 个 Skill 详情</div>
+      <div class="lc-name"><a href="https://docs.qq.com/sheet/DRG1LZVVaT2VIdnBy?tab=000004" target="_blank" rel="noopener">会战选题需求详情表</a></div>
+      <div class="lc-desc">5 个工程 + 9 个 Skill 需求详情</div>
     </div>
     <div class="link-card">
       <div class="lc-label">评分标准</div>
       <div class="lc-name"><a href="https://docs.qq.com/sheet/DRHhSYnV4c1BOcVF4?tab=000001" target="_blank" rel="noopener">AI 会战 评分细则</a></div>
-      <div class="lc-desc">腾讯文档 · 四个维度详细评分标准</div>
+      <div class="lc-desc">四个维度详细评分标准</div>
     </div>
   </div>
 
@@ -472,11 +539,11 @@
       <li><span class="ml-date">7 月 1 日</span> MVP 能跑</li>
       <li><span class="ml-date">7 月 8 日</span> 功能过半，P0 清零</li>
       <li><span class="ml-date">7 月 16 日</span> 真实数据联调跑通</li>
-      <li><span class="ml-date">7 月 22 日</span> 功能到 90%</li>
       <li><span class="ml-date">7 月底</span> 业务方两轮试用，边反馈边改</li>
-      <li><span class="ml-date">8 月 11 日</span> 功能收尾到 100%</li>
+      <li><span class="ml-date">8 月 11 日</span> 功能到 90%</li>
+      <li><span class="ml-date">8 月 15 日</span> 功能收尾到 100%</li>
       <li><span class="ml-date">8 月 21 日</span> 交付物截止</li>
-      <li><span class="ml-date">8 月 28 日</span> 验收、评比、颁奖</li>
+      <li><span class="ml-date">九月上旬</span> 验收、评比、颁奖</li>
     </ol>
   </section>
 
@@ -489,67 +556,85 @@
     <div class="scheme-row">
       <div class="scheme">
         <div class="tag">方案 A</div>
-        <div class="days">周一 · 周三 集中</div>
+        <div class="days">周一 · 周三 集中<span class="sch-time" style="font-weight: 560; color: var(--text);">（晚 7–9 点）</span></div>
       </div>
       <div class="scheme">
         <div class="tag">方案 B</div>
-        <div class="days">周二 · 周四 集中</div>
+        <div class="days">周二 · 周四 集中<span class="sch-time" style="font-weight: 560; color: var(--text);">（晚 7–9 点）</span></div>
       </div>
     </div>
 
-    <p>集中日全员必须到位（晚&nbsp;7–9&nbsp;点），各组同步开发，导师在场答疑。非集中日自由安排——内部 Review、找导师聊堵点、自己写代码，都行。每周五统一收尾，交进度自评。</p>
+    <p>集中日全员到位，同步开发，导师在场答疑。非集中日自由安排——内部 Review、找导师聊堵点、自己写代码。每周五收尾，交进度自评。</p>
   </section>
 
   <!-- ════════════════ 三、导师 ════════════════ -->
   <section class="section">
     <h2>三、导师职责</h2>
 
-    <p>6 名架构导师，每人负责 2–3 组。导师只做技术的事——进度、排期、组内分工各组自己拿主意。</p>
+    <p>6 名架构导师，每人带 2–3 组。导师只管技术。进度、排期、分工——各组自己定。日常有技术问题随时扔项目群，工作时间 2 小时内回复。</p>
 
-    <div class="detail-grid">
-
-      <div class="detail key">
-        <div class="dt-label">日常 · 全周期</div>
-        <div class="dt-name">微信群随问随答</div>
-        <div class="dt-desc">每组一个项目群，另有一个全员技术顾问群。代码报错、方案拿不准、工具不会用——直接扔群里，导师看到就回。别憋着。</div>
-      </div>
-
-      <div class="detail">
-        <div class="dt-label">第 1 周</div>
-        <div class="dt-name">技术选型把关</div>
-        <div class="dt-desc">各组提交技术方案后，导师逐一过目。方向偏了的拉回来，选型明显不合适的给替代建议。别让一组人闷头搭了三天环境才发现路子不对。</div>
-      </div>
-
-      <div class="detail">
-        <div class="dt-label">第 1–8 周 · 每周一次</div>
-        <div class="dt-name">集中答疑（共 8 次）</div>
-        <div class="dt-desc">各组把攒了一周的问题当面抛出来。导师按阶段侧重回应：MVP 期控范围，开发期看代码结构，联调期帮排数据对接的坑，测试期查边界覆盖。每次答疑后出一份纪要，共性问题写清楚，后面的组自己翻。</div>
-      </div>
-
-      <div class="detail">
-        <div class="dt-label">第 3 周 + 第 5 周</div>
-        <div class="dt-name">代码质量抽查</div>
-        <div class="dt-desc">导师从自己负责的组里各抽一次代码做深度 Review。不看风格偏好，看结构——分层有没有、错误处理做了没、AI 生成的代码有没有埋雷。问题汇总后一对一反馈。</div>
-      </div>
-
-      <div class="detail key">
-        <div class="dt-label">第 8 周</div>
-        <div class="dt-name">交付前最终 Review</div>
-        <div class="dt-desc">各组代码冻结前，导师做最后一次全面 Review。技术债清干净没有、README 能不能照着跑起来、部署环境稳不稳。这轮过了，才能进交付周。</div>
-      </div>
-
-      <div class="detail">
-        <div class="dt-label">第 9 周</div>
-        <div class="dt-name">不介入</div>
-        <div class="dt-desc">各组集中赶交付物，导师退后。除非线上出严重故障，否则别找导师。</div>
-      </div>
-
-      <div class="detail key">
-        <div class="dt-label">第 10 周</div>
-        <div class="dt-name">评审验收 + 能力评定</div>
-        <div class="dt-desc">逐组核验 5 项交付物，不合格的 24 小时内补交。然后跟 AI 小组一起从 AI 使用程度、Demo 效果、代码质量三方面打分，同时参与评定「AI 交付能力者」名单（综合前 30%）。</div>
-      </div>
-
+    <div class="data-table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th class="col-w1">周次</th>
+          <th>各组要做的事</th>
+          <th>导师要做的事</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>第 1 周</td>
+          <td>· 确定工程选题和 Skill 选题<br>· 输出技术方案：技术栈、架构草图、依赖清单、部署方式<br>· 搭建项目骨架，跑通 CI/CD 流水线</td>
+          <td>· 逐一审阅各组技术方案<br>· 方向偏了给出替代建议并附理由<br>· 通过的直接进入开发</td>
+        </tr>
+        <tr>
+          <td>第 2 周</td>
+          <td>· 提前一天提交本周问题清单<br>· 集中日当面抛出技术问题<br>· 答疑后整理纪要存档</td>
+          <td>· 侧重 MVP 期控范围，帮各组砍需求保核心<br>· 答疑后出一份纪要，共性问题写清楚</td>
+        </tr>
+        <tr>
+          <td>第 3 周</td>
+          <td>· 提交问题清单，集中日答疑<br>· 被抽到的组配合导师做深度 Review<br>· 根据反馈一周内完成整改</td>
+          <td>· 开发期侧重看代码结构<br>· 抽查一次代码：项目分层、错误处理、AI 生成代码是否有隐患<br>· 问题汇总后一对一反馈，列出整改项与优先级</td>
+        </tr>
+        <tr>
+          <td>第 4 周</td>
+          <td>· 提交问题清单，集中日答疑<br>· 答疑后整理纪要存档</td>
+          <td>· 继续按开发期侧重答疑<br>· 出纪要，同步共享文档</td>
+        </tr>
+        <tr>
+          <td>第 5 周</td>
+          <td>· 提交问题清单，集中日答疑<br>· 被抽到的组配合第二次深度 Review<br>· 根据反馈一周内完成整改</td>
+          <td>· 第二次代码抽查，侧重重构和 AI 代码隐患<br>· 一对一反馈整改项<br>· 答疑后出纪要</td>
+        </tr>
+        <tr>
+          <td>第 6 周</td>
+          <td>· 提交问题清单，集中日答疑<br>· 进入真实数据联调，记录对接问题</td>
+          <td>· 联调期侧重帮排数据对接的坑<br>· 出纪要</td>
+        </tr>
+        <tr>
+          <td>第 7 周</td>
+          <td>· 提交问题清单，集中日答疑<br>· 推进功能收尾，修复边界 case</td>
+          <td>· 测试期侧重查边界覆盖<br>· 出纪要</td>
+        </tr>
+        <tr>
+          <td>第 8 周</td>
+          <td>· 最后一次集中答疑<br>· 功能开发全部完成，代码冻结<br>· 准备 5 项交付物初稿，部署环境就绪</td>
+          <td>· 第八次答疑，出最后一份纪要<br>· 交付前全面 Review：技术债、README 可跑性、部署稳定性<br>· 逐项给出通过 / 需整改结论</td>
+        </tr>
+        <tr>
+          <td>第 9 周</td>
+          <td>· 按清单打包 5 项交付物<br>· 录制演示视频，检查画面和旁白<br>· 内部预演 Demo 流程</td>
+          <td>· 不介入日常<br>· 仅处理线上紧急故障（P0 / 数据丢失级）</td>
+        </tr>
+        <tr>
+          <td>第 10 周</td>
+          <td>· 提交全部 5 项交付物至指定平台<br>· 现场 Demo，展示核心流程<br>· 配合导师逐项核验</td>
+          <td>· 逐组核验 5 项交付物，不合格限期 24 小时补交<br>· 跟 AI 小组一起打分：AI 使用程度、Demo 效果、代码质量<br>· 评定「AI 交付能力者」名单（综合前 30%）</td>
+        </tr>
+      </tbody>
+    </table>
     </div>
 
   </section>
@@ -586,6 +671,43 @@
         <div class="dt-desc">本周用了哪些 AI 工具（Claude Code / Cursor / ChatGPT 等），生成代码占比大概多少，有没有好用的 prompt 值得分享。这条影响最终「AI 交付能力者」评定。</div>
       </div>
 
+    </div>
+
+    <div class="callout">
+      <strong>进度自评表模版：</strong>各组按以下格式填写，每周五 22:00 前提交至项目群在线表格。
+    </div>
+
+    <div class="data-table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width:10rem;">项目</th>
+          <th>填写内容</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>组名 / 选题</td>
+          <td>第 X 组 · XX 工程 + XX Skill</td>
+        </tr>
+        <tr>
+          <td>本周完成了什么</td>
+          <td>列出实际交付的功能点或任务。没完成的标注原因（卡在哪、缺什么资源）。</td>
+        </tr>
+        <tr>
+          <td>当前阻塞与风险</td>
+          <td>技术卡点、依赖方未响应、token 不够用、数据拿不到——如实写，别美化。导师根据这个优先排答疑。</td>
+        </tr>
+        <tr>
+          <td>下周计划</td>
+          <td>列出下周要交付的具体任务。对照里程碑检查节奏对不对，偏差超过 3 天要单独说明。</td>
+        </tr>
+        <tr>
+          <td>AI 使用情况自述<br><span style="font-size:0.75rem;color:var(--text-muted);">（选填 · 加分项）</span></td>
+          <td>本周用了哪些 AI 工具（Claude Code / Cursor / ChatGPT 等），生成代码占比大概多少，有没有好用的 prompt 值得分享。这条影响最终「AI 交付能力者」评定。</td>
+        </tr>
+      </tbody>
+    </table>
     </div>
 
     <p>提交方式：各组在项目群的在线表格里填，每周五 22:00 前。连续两周不交的，导师单独约谈。</p>
@@ -629,30 +751,30 @@
   <section class="section">
     <h2>六、评比与收尾</h2>
 
-    <p>第 10 周（8 月 24–28 日）：</p>
+    <p>验收、评审、颁奖集中在九月上旬：</p>
 
     <div class="detail-grid">
 
       <div class="detail">
-        <div class="dt-label">8 月 25 日</div>
+        <div class="dt-label">第 1 步</div>
         <div class="dt-name">验收：导师逐组核验交付物</div>
         <div class="dt-desc">不合格的 24 小时内补交。补不上来，直接掉队。</div>
       </div>
 
       <div class="detail key">
-        <div class="dt-label">8 月 27 日</div>
+        <div class="dt-label">第 2 步</div>
         <div class="dt-name">评审：四维度打分</div>
         <div class="dt-desc">AI 使用程度、参与人员表现、Demo 效果、代码质量。评出 4 项奖项。</div>
       </div>
 
       <div class="detail key">
-        <div class="dt-label">8 月 28 日</div>
+        <div class="dt-label">第 3 步</div>
         <div class="dt-name">公布：表彰 + 名单</div>
         <div class="dt-desc">总经办公布获奖结果。综合前 30% 进入「AI 交付能力者」名单。</div>
       </div>
 
       <div class="detail">
-        <div class="dt-label">8 月 28 日</div>
+        <div class="dt-label">第 4 步</div>
         <div class="dt-name">沉淀：Prompts 库 + 最佳实践手册</div>
         <div class="dt-desc">AI 小组整理十周积累的 prompts 和踩坑经验，产出内部手册 v1.0。</div>
       </div>
